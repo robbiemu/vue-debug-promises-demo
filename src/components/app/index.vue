@@ -23,6 +23,14 @@
 import {getValues} from "@azure/api-management-custom-widgets-tools"
 import {valuesDefault} from "../../values"
 
+interface AppProps {
+  label1: string | null,
+  label2: string | null,
+  placeholder: string | null,
+  actionUrl: string | null,
+  defaultEmail: string | null,
+}
+
 export default {
   data() {
     return {
@@ -31,7 +39,7 @@ export default {
       placeholder: null,
       actionUrl: null,
       defaultEmail: null,
-    }
+    } as AppProps
   },
 
   inject: ["secretsPromise", "requestPromise"],
@@ -43,7 +51,7 @@ export default {
     this.placeholder = editorData.placeholder
     this.actionUrl = editorData.actionUrl
 
-    const [secrets, request] = await Promise.all([this.secretsPromise, this.requestPromise])
+    const [secrets, request]: [any, any] = await Promise.all([this.secretsPromise, this.requestPromise])
 
     if (!secrets.userId) {
       this.defaultEmail = ""
@@ -51,9 +59,9 @@ export default {
     }
 
     request(`/users/${secrets.userId}`)
-      .then(e => e.json())
-      .then(({properties}) => this.defaultEmail = properties.email)
-      .catch(e => {
+      .then((e:any) => e.json())
+      .then(({properties}: {properties: any}) => this.defaultEmail = properties.email)
+      .catch((e: any) => {
         console.error("Could not prefill the email address!", e)
         this.defaultEmail = ""
       })
